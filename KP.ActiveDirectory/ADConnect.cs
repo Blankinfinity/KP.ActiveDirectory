@@ -35,5 +35,14 @@ namespace KP.ActiveDirectory
             de.AuthenticationType = AuthenticationTypes.Secure;
             return de;
         }
+
+        public static DirectoryEntry GetDirectoryEntryAtPath(string path)
+        {
+            DirectoryEntry de = new DirectoryEntry();
+            de.Path = path;
+            de.Username = @"yourdomain\sampleuser";
+            de.Password = "samplepassword";
+            return de;
+        }
     }
 }

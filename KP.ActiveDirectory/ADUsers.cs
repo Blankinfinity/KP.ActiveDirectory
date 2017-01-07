@@ -43,13 +43,52 @@ namespace KP.ActiveDirectory
             {
                 if (de.Properties.Contains(PropertyName))
                 {
-                    de.Properties[PropertyName][0] = PropertyValue;
+                    de.Properties[PropertyName][0] = PropertyValue;
                 }
                 else
                 {
                     de.Properties[PropertyName].Add(PropertyValue);
                 }
             }
+        }
+
+        /// <summary>
+        /// Method to enable a user account in the AD.
+        /// </summary>
+        /// <param name="de"></param>
+        private static void EnableAccount(DirectoryEntry de)
+        {
+            //UF_DONT_EXPIRE_PASSWD 0x10000
+            int exp = (int)de.Properties["userAccountControl"].Value;
+            de.Properties["userAccountControl"].Value = exp | 0x0001;
+            de.CommitChanges();
+            //UF_ACCOUNTDISABLE 0x0002
+            int val = (int)de.Properties["userAccountControl"].Value;
+            de.Properties["userAccountControl"].Value = val & ~0x0002;
+            de.CommitChanges();
+        }
+
+        /// <summary>
+        /// Method that disables a user account in the AD and hides user's email from Exchange address lists.
+        /// </summary>
+        /// <param name="EmployeeID"></param>
+        public void DisableAccount(string EmployeeID)
+        {
+            DirectoryEntry de = ADConnect.GetDirectoryEntry();
+            DirectorySearcher ds = new DirectorySearcher(de);
+            ds.Filter = "(&(objectCategory=Person)(objectClass=user)(employeeID=" + EmployeeID + "))";
+            ds.SearchScope = SearchScope.Subtree;
+            SearchResult results = ds.FindOne();
+            if (results != null)
+            {
+                DirectoryEntry dey = ADConnect.GetDirectoryEntryAtPath(results.Path);
+                int val = (int)dey.Properties["userAccountControl"].Value;
+                dey.Properties["userAccountControl"].Value = val | 0x0002;
+                dey.Properties["msExchHideFromAddressLists"].Value = "TRUE";
+                dey.CommitChanges();
+                dey.Close();
+            }
+            de.Close();
         }
     }
 }
