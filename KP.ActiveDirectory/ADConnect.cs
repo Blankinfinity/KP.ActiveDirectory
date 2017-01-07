@@ -35,6 +35,5 @@ namespace KP.ActiveDirectory
             de.AuthenticationType = AuthenticationTypes.Secure;
             return de;
         }
-
     }
 }
