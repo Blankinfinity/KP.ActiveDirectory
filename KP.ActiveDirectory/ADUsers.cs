@@ -30,5 +30,26 @@ namespace KP.ActiveDirectory
                 return true;
             }
         }
+
+        /// <summary>
+        /// Helper method that sets properties for AD users.
+        /// </summary>
+        /// <param name="de"></param>
+        /// <param name="PropertyName"></param>
+        /// <param name="PropertyValue"></param>
+        public static void SetProperty(DirectoryEntry de, string PropertyName, string PropertyValue)
+        {
+            if (PropertyValue != null)
+            {
+                if (de.Properties.Contains(PropertyName))
+                {
+                    de.Properties[PropertyName][0] = PropertyValue;
+                }
+                else
+                {
+                    de.Properties[PropertyName].Add(PropertyValue);
+                }
+            }
+        }
     }
 }
