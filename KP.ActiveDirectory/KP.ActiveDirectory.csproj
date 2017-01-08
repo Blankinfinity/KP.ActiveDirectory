@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADConnect.cs" />
+    <Compile Include="ADDateConversion.cs" />
     <Compile Include="ADUsers.cs" />
     <Compile Include="DomainControllers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
